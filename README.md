@@ -32,7 +32,7 @@ under a catkin workspace
 ```
 mkdir src
 cd src
-git clone https://github.com/David-Willo/APMP.git --recursive
+git clone https://github.com/xinyeDai/APMP.git --recursive
 
 ```
 due to lfs size limit, download and unzip extra dependencies
