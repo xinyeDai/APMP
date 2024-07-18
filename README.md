@@ -1,3 +1,11 @@
+<!--
+ * @Author: DavidWillo davidwillo@foxmail.com
+ * @Date: 2024-07-16 15:24:42
+ * @LastEditTime: 2024-07-16 19:34:51
+ * @LastEditors: DavidWillo
+ * Jinhao HE (David Willo), IADC HKUST(GZ)
+ * Copyright (c) 2024 by davidwillo@foxmail.com, All Rights Reserved. 
+-->
 # APMP
 This is a repository of the online localization module of:
 
@@ -23,7 +31,7 @@ Contributers: [Jinhao He *](https://github.com/David-Willo/), [Huaiyang Huang *]
 
 ### prerequisites
 
-ubuntu 20.04, ros-noetic, cuda-11.7, cudnn-8.5 
+ubuntu 20.04, ros-noetic, cuda-11.7, cudnn-8.5 libgoogle-glog-dev faiss
 
 
 ### clone repo
@@ -35,7 +43,7 @@ cd src
 git clone https://github.com/xinyeDai/APMP.git --recursive
 
 ```
-due to lfs size limit, download and unzip extra dependencies
+due to lfs size limit, download extra dependencies to the dependency folder
 - `dependencies`: 
     - `torch_catkin`: catkin wrapper for libtorch and torch_tensorrt [repo](https://github.com/David-Willo/torch_catkin)
     - `xslam_test_data`: model files and sample data [download and extract](https://drive.google.com/drive/folders/10zBkkRtqMTM4WOV0tfBpXaTPjkfRnFPy?usp=sharing)
@@ -49,17 +57,17 @@ catkin init
 catkin config --extend /opt/ros/noetic
 catkin config --merge-devel
 catkin config --cmake-args -DCMAKE_BUILD_TYPE=Release
+catkin build sophus
+catkin build xslam_visual_localization
 ```
 
 ### prepare data and run the script
 
-Download [demo data](https://drive.google.com/file/d/1wfFz8Xjewd19Kv7yhrvV2TbMhVaxDo8Q/view?usp=sharing) and extract,
+- Download [demo data](https://drive.google.com/file/d/1wfFz8Xjewd19Kv7yhrvV2TbMhVaxDo8Q/view?usp=sharing) and extract to [datapath](datapath),
+    - the map database is compatible with the colmap sparse reconstruction format, 
+    - feature extraction and database generation can follow [hloc demo](https://github.com/cvg/Hierarchical-Localization/blob/master/demo.ipynb)
 
-update path in runner script (xslam/script/run_apmp.sh) and execute,
-
-the map database is compatible with the colmap sparse reconstruction format, 
-
-feature extraction and database generation can follow [hloc demo](https://github.com/cvg/Hierarchical-Localization/blob/master/demo.ipynb)
+- update parameters in runner script (xslam/script/run_apmp.sh) and execute,
 
 
 ## known issues:
@@ -69,7 +77,19 @@ update the CMakeList.txt of protobuf_catkin
 ```
 set(USE_SYSTEM_PROTOBUF "OFF") to compile with given version
 ```
-### hardware/image dimension mismatch
+
+### undefined reference to `google::kLogSiteUninitialized'
+update dependencies/glog_catkin/cmake/Modules/FindGlog.cmake
+```
+set(GLOG_PREFER_EXPORTED_GLOG_CMAKE_CONFIGURATION False)
+```
+or
+```
+build & install an old version of glog (e.g. v0.5.0-rc2)
+```
+according to [issue543](https://github.com/google/glog/issues/543)
+
+### hardware/model dimension mismatch
 use /script/convert_model to compile your own model file
 
 
